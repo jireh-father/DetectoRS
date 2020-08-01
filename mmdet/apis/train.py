@@ -72,7 +72,7 @@ def batch_processor(model, data, train_mode):
     Returns:
         dict: A dict containing losses and log vars.
     """
-    print(data.shape)
+    print(data)
     losses = model(**data)
     loss, log_vars = parse_losses(losses)
 
