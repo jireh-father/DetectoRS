@@ -266,20 +266,17 @@ data = dict(
         ann_file=data_root + 'annotations/train_ectropion_anno.json',
         img_prefix=data_root + 'ectropion_images/',
         # seg_prefix=data_root + 'stuffthingmaps/train2017/',
-        pipeline=train_pipeline,
-        classes=classes),
+        pipeline=train_pipeline),
     val=dict(
         type=dataset_type,
         ann_file=data_root + 'annotations/val_ectropion_anno.json',
         img_prefix=data_root + 'ectropion_images/',
-        pipeline=test_pipeline,
-        classes=classes),
+        pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
         ann_file=data_root + 'annotations/test_ectropion_anno.json',
         img_prefix=data_root + 'ectropion_images/',
-        pipeline=test_pipeline,
-        classes=classes))
+        pipeline=test_pipeline))
 evaluation = dict(interval=1, metric=['bbox', 'segm'])
 # optimizer
 optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001)
