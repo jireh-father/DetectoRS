@@ -49,7 +49,7 @@ model = dict(
             in_channels=256,
             fc_out_channels=1024,
             roi_feat_size=7,
-            num_classes=81,
+            num_classes=2,
             target_means=[0., 0., 0., 0.],
             target_stds=[0.1, 0.1, 0.2, 0.2],
             reg_class_agnostic=True,
@@ -62,7 +62,7 @@ model = dict(
             in_channels=256,
             fc_out_channels=1024,
             roi_feat_size=7,
-            num_classes=81,
+            num_classes=2,
             target_means=[0., 0., 0., 0.],
             target_stds=[0.05, 0.05, 0.1, 0.1],
             reg_class_agnostic=True,
@@ -75,7 +75,7 @@ model = dict(
             in_channels=256,
             fc_out_channels=1024,
             roi_feat_size=7,
-            num_classes=81,
+            num_classes=2,
             target_means=[0., 0., 0., 0.],
             target_stds=[0.033, 0.033, 0.067, 0.067],
             reg_class_agnostic=True,
@@ -95,7 +95,7 @@ model = dict(
             num_convs=4,
             in_channels=256,
             conv_out_channels=256,
-            num_classes=81,
+            num_classes=2,
             loss_mask=dict(
                 type='CrossEntropyLoss', use_mask=True, loss_weight=1.0)),
         dict(
@@ -103,7 +103,7 @@ model = dict(
             num_convs=4,
             in_channels=256,
             conv_out_channels=256,
-            num_classes=81,
+            num_classes=2,
             loss_mask=dict(
                 type='CrossEntropyLoss', use_mask=True, loss_weight=1.0)),
         dict(
@@ -111,7 +111,7 @@ model = dict(
             num_convs=4,
             in_channels=256,
             conv_out_channels=256,
-            num_classes=81,
+            num_classes=2,
             loss_mask=dict(
                 type='CrossEntropyLoss', use_mask=True, loss_weight=1.0))
     ],
@@ -127,7 +127,7 @@ model = dict(
         num_convs=4,
         in_channels=256,
         conv_out_channels=256,
-        num_classes=183,
+        num_classes=2,
         ignore_label=255,
         loss_weight=0.2))
 # model training and testing settings
@@ -222,6 +222,7 @@ test_cfg = dict(
 # dataset settings
 dataset_type = 'CocoDataset'
 data_root = 'data/coco/'
+classes = ('ectropion')
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 train_pipeline = [
@@ -262,20 +263,23 @@ data = dict(
     workers_per_gpu=1,
     train=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/train_ectropion_anno.json',
-        img_prefix=data_root + 'ectropion_images/',
+        ann_file=data_root + 'annotations/instances_train2017.json',
+        img_prefix=data_root + 'train2017/',
         seg_prefix=data_root + 'stuffthingmaps/train2017/',
-        pipeline=train_pipeline),
+        pipeline=train_pipeline,
+        classes=classes),
     val=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/val_ectropion_anno.json',
-        img_prefix=data_root + 'ectropion_images/',
-        pipeline=test_pipeline),
+        ann_file=data_root + 'annotations/instances_val2017.json',
+        img_prefix=data_root + 'val2017/',
+        pipeline=test_pipeline,
+        classes=classes),
     test=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/test_ectropion_anno.json',
-        img_prefix=data_root + 'ectropion_images/',
-        pipeline=test_pipeline))
+        ann_file=data_root + 'annotations/instances_val2017.json',
+        img_prefix=data_root + 'val2017/',
+        pipeline=test_pipeline,
+        classes=classes))
 evaluation = dict(interval=1, metric=['bbox', 'segm'])
 # optimizer
 optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001)
