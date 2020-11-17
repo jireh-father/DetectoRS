@@ -18,7 +18,7 @@ model = dict(
         out_indices=(0, 1, 2, 3),
         frozen_stages=1,
         conv_cfg=conv_cfg,
-        sac=dict(type='SAC', use_deform=False),
+        sac=dict(type='SAC', use_deform=True),
         stage_with_sac=(False, True, True, True),
         norm_cfg=dict(type='BN', requires_grad=True),
         style='pytorch'),
