@@ -117,21 +117,22 @@ model = dict(
             loss_mask=dict(
                 type='CrossEntropyLoss', use_mask=True, loss_weight=1.0))
     ],
-    semantic_roi_extractor=dict(
-        type='SingleRoIExtractor',
-        roi_layer=dict(type='RoIAlign', out_size=14, sample_num=2),
-        out_channels=256,
-        featmap_strides=[8]),
-    semantic_head=dict(
-        type='FusedSemanticHead',
-        num_ins=5,
-        fusion_level=1,
-        num_convs=4,
-        in_channels=256,
-        conv_out_channels=256,
-        num_classes=183,
-        ignore_label=255,
-        loss_weight=0.2))
+    # semantic_roi_extractor=dict(
+    #     type='SingleRoIExtractor',
+    #     roi_layer=dict(type='RoIAlign', out_size=14, sample_num=2),
+    #     out_channels=256,
+    #     featmap_strides=[8]),
+    # semantic_head=dict(
+    #     type='FusedSemanticHead',
+    #     num_ins=5,
+    #     fusion_level=1,
+    #     num_convs=4,
+    #     in_channels=256,
+    #     conv_out_channels=256,
+    #     num_classes=183,
+    #     ignore_label=255,
+    #     loss_weight=0.2)
+)
 # model training and testing settings
 train_cfg = dict(
     rpn=dict(
@@ -242,7 +243,7 @@ train_pipeline = [
     dict(type='DefaultFormatBundle'),
     dict(
         type='Collect',
-        keys=['img', 'gt_bboxes', 'gt_labels', 'gt_masks', 'gt_semantic_seg']),
+        keys=['img', 'gt_bboxes', 'gt_labels', 'gt_masks']),#, 'gt_semantic_seg']),
 ]
 test_pipeline = [
     dict(type='LoadImageFromFile'),
