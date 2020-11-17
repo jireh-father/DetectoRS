@@ -75,20 +75,20 @@ SCALING_MAP = {
 
 
 class BlockSpec(object):
-  """A container class that specifies the block configuration for SpineNet."""
+    """A container class that specifies the block configuration for SpineNet."""
 
-  def __init__(self, level, block_fn, input_offsets, is_output):
-    self.level = level
-    self.block_fn = block_fn
-    self.input_offsets = input_offsets
-    self.is_output = is_output
+    def __init__(self, level, block_fn, input_offsets, is_output):
+        self.level = level
+        self.block_fn = block_fn
+        self.input_offsets = input_offsets
+        self.is_output = is_output
 
 
 def build_block_specs(block_specs=None):
-  """Builds the list of BlockSpec objects for SpineNet."""
-  if not block_specs:
-    block_specs = SPINENET_BLOCK_SPECS
-  return [BlockSpec(*b) for b in block_specs]
+    """Builds the list of BlockSpec objects for SpineNet."""
+    if not block_specs:
+        block_specs = SPINENET_BLOCK_SPECS
+    return [BlockSpec(*b) for b in block_specs]
 
 
 class Resample(nn.Module):
@@ -100,7 +100,8 @@ class Resample(nn.Module):
             in_channels *= 4
         self.squeeze_conv = ConvModule(in_channels, new_in_channels, 1, norm_cfg=norm_cfg)
         if scale < 1:
-            self.downsample_conv = ConvModule(new_in_channels, new_in_channels, 3, padding=1, stride=2, norm_cfg=norm_cfg)
+            self.downsample_conv = ConvModule(new_in_channels, new_in_channels, 3, padding=1, stride=2,
+                                              norm_cfg=norm_cfg)
         self.expand_conv = ConvModule(new_in_channels, out_channels, 1, norm_cfg=norm_cfg, act_cfg=None)
 
     def _resize(self, x):
@@ -112,7 +113,8 @@ class Resample(nn.Module):
             x = self.downsample_conv(x)
             if self.scale < 0.5:
                 new_kernel_size = 3 if self.scale >= 0.25 else 5
-                x = F.max_pool2d(x, kernel_size=new_kernel_size, stride=int(0.5/self.scale), padding=new_kernel_size//2)
+                x = F.max_pool2d(x, kernel_size=new_kernel_size, stride=int(0.5 / self.scale),
+                                 padding=new_kernel_size // 2)
             return x
 
     def forward(self, inputs):
@@ -124,6 +126,7 @@ class Resample(nn.Module):
 
 class Merge(nn.Module):
     """Merge two input tensors"""
+
     def __init__(self, block_spec, norm_cfg, alpha, filter_size_scale):
         super(Merge, self).__init__()
         out_channels = int(FILTER_SIZE_MAP[block_spec.level] * filter_size_scale)
@@ -134,7 +137,7 @@ class Merge(nn.Module):
         for spec_idx in block_spec.input_offsets:
             spec = BlockSpec(*SPINENET_BLOCK_SPECS[spec_idx])
             in_channels = int(FILTER_SIZE_MAP[spec.level] * filter_size_scale)
-            scale = 2**(spec.level - block_spec.level)
+            scale = 2 ** (spec.level - block_spec.level)
             self.resample_ops.append(
                 Resample(in_channels, out_channels, scale, spec.block_fn, norm_cfg, alpha)
             )
@@ -143,10 +146,10 @@ class Merge(nn.Module):
         assert len(inputs) == len(self.resample_ops)
         parent0_feat = self.resample_ops[0](inputs[0])
         parent1_feat = self.resample_ops[1](inputs[1])
-        print(inputs[0].shape)
-        print(inputs[1].shape)
-        print(parent0_feat.shape)
-        print(parent1_feat.shape)
+        print("input 0 shape", inputs[0].shape)
+        print("input 1 shape", inputs[1].shape)
+        print("resample_ops 0 shape", parent0_feat.shape)
+        print("resample_ops 1 shape", parent1_feat.shape)
         target_feat = parent0_feat + parent1_feat
         return target_feat
 
@@ -154,6 +157,7 @@ class Merge(nn.Module):
 @BACKBONES.register_module
 class SpineNet(nn.Module):
     """Class to build SpineNet backbone"""
+
     def __init__(self,
                  arch,
                  in_channels=3,
@@ -213,12 +217,12 @@ class SpineNet(nn.Module):
         self.endpoint_convs = nn.ModuleDict()
         for block_spec in self._block_specs:
             if block_spec.is_output:
-                in_channels = int(FILTER_SIZE_MAP[block_spec.level]*self._filter_size_scale) * 4
+                in_channels = int(FILTER_SIZE_MAP[block_spec.level] * self._filter_size_scale) * 4
                 self.endpoint_convs[str(block_spec.level)] = ConvModule(in_channels,
-                                                                   self._endpoints_num_filters,
-                                                                   kernel_size=1,
-                                                                   norm_cfg=self.norm_cfg,
-                                                                   act_cfg=None)
+                                                                        self._endpoints_num_filters,
+                                                                        kernel_size=1,
+                                                                        norm_cfg=self.norm_cfg,
+                                                                        act_cfg=None)
 
     def _make_scale_permuted_network(self):
         self.merge_ops = nn.ModuleList()
