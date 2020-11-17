@@ -261,8 +261,8 @@ test_pipeline = [
         ])
 ]
 data = dict(
-    imgs_per_gpu=1,
-    workers_per_gpu=1,
+    imgs_per_gpu=3,
+    workers_per_gpu=3,
     train=dict(
         type=dataset_type,
         ann_file=data_root + 'fashion/train_total.json',
@@ -307,6 +307,6 @@ total_epochs = 40
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = './work_dirs/DetectoRS_mstrain_400_1200_x101_32x4d_40e.py'
-load_from = None#'DetectoRS_X101-ed983634.pth'
+load_from = 'DetectoRS_X101-ed983634.pth'
 resume_from = None
 workflow = [('train', 1)]
