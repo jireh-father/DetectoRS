@@ -252,14 +252,19 @@ class SpineNet(nn.Module):
                     constant_init(m.norm2, 0)
 
     def forward(self, input):
+        print("input size", input.shape)
         feat = self.maxpool(self.conv1(input))
         feat1 = self.init_block1(feat)
         feat2 = self.init_block2(feat1)
+        print('feat1', feat1.shape)
+        print('feat2', feat2.shape)
         block_feats = [feat1, feat2]
         output_feat = {}
         num_outgoing_connections = [0, 0]
 
+        print("block specs", len(self._block_specs))
         for i, spec in enumerate(self._block_specs):
+            print("input offsets", spec.input_offsets)
             target_feat = self.merge_ops[i]([block_feats[feat_idx] for feat_idx in spec.input_offsets])
             # Connect intermediate blocks with outdegree 0 to the output block.
             if spec.is_output:
