@@ -307,6 +307,6 @@ total_epochs = 40
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = './work_dirs/DetectoRS_mstrain_400_1200_x101_32x4d_40e.py'
-load_from = 'DetectoRS_X101-ed983634.pth'
+load_from = None#'DetectoRS_X101-ed983634.pth'
 resume_from = None
 workflow = [('train', 1)]
