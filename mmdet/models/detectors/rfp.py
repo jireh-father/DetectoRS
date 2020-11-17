@@ -81,7 +81,10 @@ class RecursiveFeaturePyramid(HybridTaskCascade):
                  mask_info_flow,
                  **kwargs)
         if not self.rfp_sharing:
-            backbone["rfp"] = neck_out_channels
+            if backbone['type'] == 'SpineNet':
+                pass
+            else:
+                backbone["rfp"] = neck_out_channels
             self.rfp_modules = torch.nn.ModuleList()
             for rfp_idx in range(1, rfp_steps):
                 rfp_module = builder.build_backbone(backbone)
