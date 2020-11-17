@@ -88,7 +88,10 @@ class RecursiveFeaturePyramid(HybridTaskCascade):
             self.rfp_modules = torch.nn.ModuleList()
             for rfp_idx in range(1, rfp_steps):
                 rfp_module = builder.build_backbone(backbone)
-                rfp_module.init_weights(kwargs["pretrained"])
+                if backbone['type'] == 'SpineNet':
+                    rfp_module.init_weights()
+                else:
+                    rfp_module.init_weights(kwargs["pretrained"])
                 self.rfp_modules.append(rfp_module)
         self.rfp_aspp = ASPP(neck_out_channels, neck_out_channels // 4)
         self.rfp_weight = torch.nn.Conv2d(
