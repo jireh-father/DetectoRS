@@ -62,6 +62,7 @@ class RecursiveFeaturePyramid(HybridTaskCascade):
         self.rfp_steps = rfp_steps
         self.rfp_sharing = rfp_sharing
         self.stage_with_rfp = stage_with_rfp
+        print(backbone)
         backbone["rfp"] = None
         backbone["stage_with_rfp"] = stage_with_rfp
         neck_out_channels = kwargs["neck"]["out_channels"]
