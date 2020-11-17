@@ -143,6 +143,10 @@ class Merge(nn.Module):
         assert len(inputs) == len(self.resample_ops)
         parent0_feat = self.resample_ops[0](inputs[0])
         parent1_feat = self.resample_ops[1](inputs[1])
+        print(inputs[0].shape)
+        print(inputs[1].shape)
+        print(parent0_feat.shape)
+        print(parent1_feat.shape)
         target_feat = parent0_feat + parent1_feat
         return target_feat
 
